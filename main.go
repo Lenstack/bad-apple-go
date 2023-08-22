@@ -11,11 +11,17 @@ import (
 	"time"
 )
 
-func main() {
-	videoPath := "videos/bad-apple.mp4" // Path to your video file
-	outputFile := "output.txt"          // Path to the output text file
-	ffmpegPath := "ffmpeg-master-latest-win64-gpl/bin/"
+var (
+	asciiChars     = []string{" ", ".", ",", ":", ";", "+", "*", "?", "%", "S", "#", "@"}
+	videoPath      = "videos/bad-apple.mp4"
+	outputFile     = "output.txt"
+	ffmpegPath     = "ffmpeg-master-latest-win64-gpl/bin/"
+	terminalWidth  = 120
+	terminalHeight = 30
+	targetFPS      = 60.0
+)
 
+func main() {
 	// Get video duration using FFmpeg
 	duration, err := getVideoDuration(videoPath, ffmpegPath)
 	if err != nil {
@@ -37,8 +43,6 @@ func main() {
 	}(output)
 
 	// Set the terminal size to match the ASCII dimensions
-	terminalWidth := 120
-	terminalHeight := 30
 	setTerminalSize(terminalWidth, terminalHeight)
 
 	// Create an FFmpeg command to generate ASCII frames
@@ -61,8 +65,7 @@ func main() {
 	frameSize := terminalWidth * terminalHeight
 
 	// Calculate the delay between each frame to simulate animation speed
-	targetFrames := 60.0
-	totalFrames := int(duration * targetFrames)
+	totalFrames := int(duration * targetFPS)
 
 	for i := 0; i < totalFrames; i++ {
 		frameData := make([]byte, frameSize)
@@ -79,7 +82,7 @@ func main() {
 		fmt.Print(asciiFrame)
 
 		// Calculate the expected time for the next frame
-		expectedTime := time.Now().Add(time.Second / time.Duration(targetFrames))
+		expectedTime := time.Now().Add(time.Second / time.Duration(targetFPS))
 
 		// Calculate the remaining time until the expected frame time
 		remainingTime := expectedTime.Sub(time.Now())
@@ -119,7 +122,6 @@ func setTerminalSize(width, height int) {
 }
 
 func convertToASCII(frameData []byte, width int, height int) string {
-	asciiChars := []string{" ", ".", ",", ":", ";", "+", "*", "?", "%", "S", "#", "@"}
 	var asciiFrame strings.Builder
 
 	for y := 0; y < height; y++ {
