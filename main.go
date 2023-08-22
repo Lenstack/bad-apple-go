@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	videoPath := "bad-apple.mp4" // Path to your video file
-	outputFile := "output.txt"   // Path to the output text file
+	videoPath := "videos/BleachSennenKessen-hen_20_3.mp4" // Path to your video file
+	outputFile := "output.txt"                            // Path to the output text file
 	ffmpegPath := "ffmpeg-master-latest-win64-gpl/bin/"
 
 	// Get video duration using FFmpeg
